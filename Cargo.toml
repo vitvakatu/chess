@@ -1,0 +1,10 @@
+[package]
+name = "chess"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+iced = { git = "https://github.com/iced-rs/iced", rev = "adce9e04213803", features = ["svg"] }
+iced_native = { git = "https://github.com/iced-rs/iced", rev = "adce9e04213803" }
+iced_graphics = { git = "https://github.com/iced-rs/iced", rev = "adce9e04213803" }
+tightness = "1.0"
