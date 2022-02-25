@@ -85,13 +85,11 @@ pub struct Board<'a> {
 
 impl<'a> Board<'a> {
     pub fn new(state: &'a mut BoardState) -> Self {
-        Self { state, show_promotion_menu: false, promotion_menu: PromotionMenu::new() }
+        Self { state, show_promotion_menu: true, promotion_menu: PromotionMenu::new() }
     }
 }
 
-impl<'a, B> Widget<Message, Renderer<B>> for Board<'a>
-where
-    B: Backend,
+impl<'a> Widget<Message, iced_wgpu::Renderer> for Board<'a>
 {
     fn width(&self) -> Length {
         Length::Fill
@@ -101,7 +99,7 @@ where
     }
     fn layout(
         &self,
-        renderer: &Renderer<B>,
+        renderer: &iced_wgpu::Renderer,
         limits: &iced_native::layout::Limits,
     ) -> iced_native::layout::Node {
         let max_size = limits.max().width.min(limits.max().height);
@@ -114,7 +112,7 @@ where
         event: iced_native::Event,
         layout: iced_native::Layout<'_>,
         cursor_position: Point,
-        _renderer: &Renderer<B>,
+        _renderer: &iced_wgpu::Renderer,
         _clipboard: &mut dyn iced_native::Clipboard,
         shell: &mut iced_native::Shell<'_, Message>,
     ) -> iced_native::event::Status {
@@ -142,7 +140,7 @@ where
 
     fn draw(
         &self,
-        renderer: &mut Renderer<B>,
+        renderer: &mut iced_wgpu::Renderer,
         style: &iced_native::renderer::Style,
         layout: iced_native::Layout<'_>,
         cursor_position: iced::Point,
@@ -216,17 +214,15 @@ where
 
         if self.show_promotion_menu {
             renderer.with_layer(*viewport, |renderer| {
-                self.promotion_menu.view().draw(renderer, style, layout, cursor_position, viewport);
+                PromotionMenu::new().view().draw(renderer, style, layout, cursor_position, viewport);
             });
         }
     }
 }
 
-impl<'a, B> Into<Element<'a, Message, Renderer<B>>> for Board<'a>
-where
-    B: Backend,
+impl<'a> Into<Element<'a, Message, iced_wgpu::Renderer>> for Board<'a>
 {
-    fn into(self) -> Element<'a, Message, Renderer<B>> {
+    fn into(self) -> Element<'a, Message, iced_wgpu::Renderer> {
         Element::new(self)
     }
 }

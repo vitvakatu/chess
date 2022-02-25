@@ -1,7 +1,7 @@
 ## TODO List
 
+- Visualisation on yew + tauri
 - Promotion
-    - Logic
     - Visual component for selecting promotion
 - En peasant
 - Improve moves list
