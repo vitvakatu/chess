@@ -14,7 +14,6 @@ use crate::pos::{
     DiagonalDirection, File, HorizontalDirection, Pos, Rank, UnboundedPos, VerticalDirection,
 };
 use crate::take_while::TakeWhileInclusiveExt;
-use iced::Point;
 
 pub type IsHighlighted = bool;
 
@@ -670,6 +669,10 @@ impl BoardState {
         matches!(self.square_by_pos(pos), Square::Piece(_))
     }
 
+    pub fn is_highlighted(&self, index: usize) -> bool {
+        self.squares.get(index).unwrap().1
+    }
+
     fn pos_by_square_index(&self, index: usize) -> Pos {
         assert!(index < 64, "Attempt to get pos by invalid index");
         let file = index % 8 + 1;
@@ -693,13 +696,5 @@ impl BoardState {
         let i = ((64 - (pos.rank.get() * 8)) + pos.file.as_u8() - 1) as usize;
         assert!(i < 64, "Attempt to access square outside bounds");
         i
-    }
-
-    pub fn cursor_position_to_pos(&self, cursor_position: Point) -> Pos {
-        let file = (cursor_position.x * 8.0).ceil() as u8;
-        let file = File::from_u8(file);
-        let rank = 9 - (cursor_position.y * 8.0).ceil() as u8;
-        let rank = Rank::new(rank);
-        Pos::new(file, rank)
     }
 }

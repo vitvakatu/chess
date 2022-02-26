@@ -1,9 +1,8 @@
 #![feature(bool_to_option)]
 
-use iced::{executor, Application, Command, Settings};
-use iced::{Container, Row};
 use move_list::MoveList;
 use moves::PromotedTo;
+use yew::prelude::*;
 
 mod board;
 mod fen;
@@ -22,8 +21,33 @@ use crate::moves::CastlingSide;
 use crate::piece::{Piece, PieceColor, PieceType};
 use crate::pos::{File, Pos, Rank};
 
-fn main() -> iced::Result {
-    App::run(Settings::default())
+pub enum Msg {
+    ClickOnSquare(Pos),
+}
+
+struct Model {}
+
+impl Component for Model {
+    type Message = Msg;
+    type Properties = ();
+
+    fn create(ctx: &Context<Self>) -> Self {
+        Self {}
+    }
+
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+        false
+    }
+
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        html! {
+             <Board />
+        }
+    }
+}
+
+fn main() {
+    yew::start_app::<Model>();
 }
 
 #[derive(Debug, Clone)]
@@ -38,20 +62,7 @@ struct App {
     moves_list: MoveList,
 }
 
-impl Application for App {
-    type Executor = executor::Default;
-    type Message = Message;
-    type Flags = ();
-
-    fn new(_flags: ()) -> (App, Command<Self::Message>) {
-        (
-            App {
-                board: BoardState::new(),
-                moves_list: MoveList::new(),
-            },
-            Command::none(),
-        )
-    }
+impl App {
 
     fn title(&self) -> String {
         let side_to_move = self.board.turn;
@@ -64,7 +75,7 @@ impl Application for App {
         format!("Chess Explorer | {move_number}. {side_to_move} {game_result}")
     }
 
-    fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
+    fn update(&mut self, message: Message) {
         match message {
             Message::ClickOnSquare(pos) => {
                 self.board.stop_highlighting();
@@ -120,14 +131,7 @@ impl Application for App {
             Message::ShowPromotionMenu(file, side) => {}
             Message::ClosePromotionMenu(prototed) => {}
         }
-        Command::none()
+        ()
     }
 
-    fn view(&mut self) -> iced::Element<Self::Message> {
-        let board_container = Container::new(Board::new(&mut self.board));
-        Row::new()
-            .push(board_container)
-            .push(self.moves_list.view())
-            .into()
-    }
 }
