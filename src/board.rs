@@ -134,9 +134,14 @@ pub struct Board {
     state: BoardState,
 }
 
+#[derive(Debug, PartialEq, Properties)]
+pub struct BoardProps {
+    pub move_list: crate::Moves,
+}
+
 impl Component for Board {
     type Message = Msg;
-    type Properties = ();
+    type Properties = BoardProps;
     fn create(ctx: &Context<Self>) -> Self {
         Self {
             state: BoardState::new(),
@@ -179,7 +184,7 @@ impl Component for Board {
                             let expected = self.state.from_san_move(san_move);
                             assert_eq!(expected, mv);
                             self.state.make_move(mv);
-                            //self.moves_list.add_move(san_move);
+                            ctx.props().move_list.push(san_move);
                             if self.state.is_checkmate(self.state.turn) {
                                 self.state.game_result = Some(GameResult::WinByCheckmate {
                                     checkmated_side: self.state.turn,
@@ -198,6 +203,7 @@ impl Component for Board {
                 }
                 true
             }
+            _ => false,
         }
     }
 
